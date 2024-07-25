@@ -1,0 +1,44 @@
+{% extends 'EridonKh/index.html' %}
+
+{% block content %}
+    <br />
+    
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фільтри</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul>
+        {% for data in line_of_business %}
+        <li><a href="#">{{ data.line_of_business }}</a></li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+    <div class="container ">
+    <table class="table table-striped table-hover table-bordered table-fixed">
+        <thead>
+        <tr>
+            <th scope="col">Товар</th>
+            <th scope="col">Партія</th>
+            <th scope="col">Бух облік</th>
+            <th scope="col">Склад облік</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for val in data %}
+            <tr>
+
+            <td scope="row">{{ val.product}}</td>
+            <td scope="row">{{ val.nomenclature_series }}</td>
+            <td scope="row">{{ val.buh }}</td>
+            <td scope="row">{{ val.skl }}</td>
+
+           
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
