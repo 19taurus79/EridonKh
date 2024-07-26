@@ -19,7 +19,7 @@ jobs:
         uses: py-actions/flake8@v2.3.0
         with:
           ignore:"F401"
-          max-line-length: "100"
+          max-line-length:"100"
 
 
   black:
