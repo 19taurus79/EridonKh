@@ -17,6 +17,9 @@ jobs:
           python-version: "3.12"
       - name: Python flake8 Lint
         uses: py-actions/flake8@v2.3.0
+        with:
+          ignore:"F401"
+          max-line-length: "120"
 
 
   black:
