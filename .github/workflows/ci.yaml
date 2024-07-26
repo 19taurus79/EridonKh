@@ -14,12 +14,12 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
-      - name: Python flake8 Lint
-        uses: py-actions/flake8@v2.3.0
+          python-version: "3.11"
+      - name: flake8 Lint
+        uses: py-actions/flake8@v2
         with:
-          ignore:"F401"
-          max-line-length:"100"
+          ignore: "F401"
+          max-line-length: "100"
 
 
   black:
