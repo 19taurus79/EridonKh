@@ -1,12 +1,20 @@
 from django.db.models import Count
 from django.shortcuts import render
+from django.views.generic import TemplateView, ListView
+
 from .models import Submissions, Remains
 
 
 # Create your views here.
-def index_view(request):
-    data = Submissions.objects.values("client").order_by("client").distinct()
-    return render(request, "EridonKh/home.html", {"data": data})
+# def index_view(request):
+#     data = Submissions.objects.values("client").order_by("client").distinct()
+#     return render(request, "EridonKh/home.html", {"data": data})
+
+
+class IndexView(ListView):
+    model = Submissions
+    template_name = "EridonKh/home.html"
+    queryset = Submissions.objects.values("client").order_by("client").distinct()
 
 
 def remains_view(request):
