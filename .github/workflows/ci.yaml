@@ -14,15 +14,19 @@ jobs:
       - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
-      - name: python-flake8
-        uses: julianwachholz/flake8-action@v2.0.2
+          python-version: "3.11"
+      - name: flake8 Lint
+        uses: py-actions/flake8@v2
+        with:
+          ignore: "F401"
+          max-line-length: "120"
+
 
   black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: psf/black@stable
+        - uses: actions/checkout@v3
+        - uses: psf/black@stable
 
   doctest:
     runs-on: ubuntu-latest
