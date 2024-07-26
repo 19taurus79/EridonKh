@@ -17,6 +17,11 @@ class IndexView(ListView):
     queryset = Submissions.objects.values("client").order_by("client").distinct()
 
 
+class RemainsView(ListView):
+    model = Remains
+    template_name = "EridonKh/remains.html"
+
+
 def remains_view(request):
     data = Remains.objects.filter(
         line_of_business__in=[
