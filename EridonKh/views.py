@@ -53,6 +53,14 @@ class RemainsView(ListView):
         return context
 
 
+class RemainsFiltered(RemainsView, ListView):
+    def get_queryset(self):
+        queryset = Remains.objects.filter(
+            line_of_business__in=self.request.GET.getlist("lob")
+        )
+        return queryset
+
+
 def remains_view(request):
     data = Remains.objects.filter(
         line_of_business__in=[

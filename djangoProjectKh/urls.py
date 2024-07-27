@@ -19,10 +19,11 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import path
 
-from EridonKh.views import IndexView, RemainsView
+from EridonKh.views import IndexView, RemainsView, RemainsFiltered
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("filter/", RemainsFiltered.as_view(), name="remains_filtered"),
     path("home/", IndexView.as_view(), name="home_page"),
     path("remains/", RemainsView.as_view(), name="remains_page"),
 ] + debug_toolbar_urls()
