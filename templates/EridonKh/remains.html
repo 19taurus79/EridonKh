@@ -3,7 +3,7 @@
 {% block content %}
     <br />
     
-
+    
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фільтри</h5>
@@ -28,7 +28,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for val in data %}
+        {% for val in object_list %}
             <tr>
 
             <td scope="row">{{ val.product}}</td>
