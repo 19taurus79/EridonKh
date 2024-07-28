@@ -1,0 +1,11 @@
+{% extends 'EridonKh/index.html' %}
+{% block content %}
+    <div class="container position-relative  py-2 px-4">
+    <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Вхід</button>
+    </form>
+    </div>
+
+{% endblock %}
