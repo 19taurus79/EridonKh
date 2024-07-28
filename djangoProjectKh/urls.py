@@ -22,8 +22,9 @@ from django.urls import path
 from EridonKh.views import IndexView, RemainsView, RemainsFiltered
 
 urlpatterns = [
+    path("", IndexView.as_view(), name="home_page"),
     path("admin/", admin.site.urls),
     path("filter/", RemainsFiltered.as_view(), name="remains_filtered"),
-    path("home/", IndexView.as_view(), name="home_page"),
     path("remains/", RemainsView.as_view(), name="remains_page"),
 ] + debug_toolbar_urls()
+e
