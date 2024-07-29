@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path
 
 from EridonKh.views import (
-    IndexView,
+    SubmissionsView,
     RemainsView,
     RemainsFiltered,
     user_login,
@@ -28,7 +28,7 @@ from EridonKh.views import (
 )
 
 urlpatterns = [
-    path("", IndexView.as_view(), name="home_page"),
+    path("", SubmissionsView.as_view(), name="home_page"),
     path("login/", user_login, name="user_login"),
     path("logout/", user_logout, name="user_logout"),
     path("admin/", admin.site.urls, name="admin"),

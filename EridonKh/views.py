@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView
 from .forms import LoginForm
-from .models import Submissions, Remains
+from .models import Submissions, Remains, ManagerClient
 
 
 def user_login(request):
@@ -34,15 +34,36 @@ def user_logout(request):
 #     return render(request, "EridonKh/submissions.html", {"data": data})
 
 
-class IndexView(ListView):
+class SubmissionsView(ListView):
+
     model = Submissions
     template_name = "EridonKh/submissions.html"
-    queryset = Submissions.objects.values("client").order_by("client").distinct()
+    # queryset = Submissions.objects.values("client").order_by("client").distinct()
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["test"] = "test"
-        return context
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["test"] = "test"
+    #     context["user"] = self.request.user
+    #     return context
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            if self.request.user.is_superuser:
+                queryset = (
+                    Submissions.objects.values("client").distinct().order_by("client")
+                )
+                return queryset
+            else:
+                queryset = (
+                    Submissions.objects.values("client")
+                    .filter(manager__startswith=self.request.user.last_name)
+                    .distinct()
+                    .order_by("client")
+                )
+                return queryset
+        else:
+            queryset = []
+            return queryset
 
 
 class RemainsView(ListView):
