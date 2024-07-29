@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.db.models import CASCADE
 
 
 class AvailableStock(models.Model):
@@ -38,6 +39,9 @@ class ClientContract(models.Model):
 class ClientGuide(models.Model):
     id = models.UUIDField(primary_key=True)
     client = models.CharField(blank=True, null=True)
+
+    def __str__(self):
+        return self.client
 
     class Meta:
         managed = False
@@ -100,16 +104,6 @@ class GuideContract(models.Model):
         db_table = "guide_contract"
 
 
-class ManagerClient(models.Model):
-    id = models.UUIDField(primary_key=True)
-    manager = models.UUIDField(blank=True, null=True)
-    client = models.UUIDField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = "manager_client"
-
-
 class ManagerGuideTable(models.Model):
     id = models.UUIDField(primary_key=True)
     manager = models.CharField(blank=True, null=True)
@@ -117,9 +111,29 @@ class ManagerGuideTable(models.Model):
     role = models.CharField(blank=True, null=True)
     phone = models.CharField(blank=True, null=True)
 
+    def __str__(self):
+        return self.manager
+
     class Meta:
         managed = False
         db_table = "manager_guide_table"
+
+
+class ManagerClient(models.Model):
+    id = models.UUIDField(primary_key=True)
+    manager = models.ForeignKey(
+        ManagerGuideTable, on_delete=CASCADE, db_column="manager"
+    )
+    client = models.ForeignKey(ClientGuide, on_delete=CASCADE, db_column="client")
+
+    # manager = models.UUIDField(blank=True, null=True)
+    # client = models.UUIDField(blank=True, null=True)
+    def __str__(self):
+        return f"{self.client} / {self.manager}"
+
+    class Meta:
+        managed = False
+        db_table = "manager_client"
 
 
 class MovedData(models.Model):
