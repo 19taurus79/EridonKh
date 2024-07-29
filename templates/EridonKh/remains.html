@@ -3,27 +3,40 @@
 {% block content %}
     <br/>
 
-    <form method="get" action="{% url 'remains_filtered' %}">
-        <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-             aria-labelledby="offcanvasWithBothOptionsLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фільтри</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <ul>
-                    {% for data in line_of_business %}
-                        <li>
-                            <input type="checkbox" name="lob" value="{{ data.line_of_business }}">
-                            <a href="#">{{ data.line_of_business }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <button type="submit">Виконати</button>
-        </div>
 
-    </form>
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+         aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фільтри</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+
+            <form method="get" action="{% url 'remains_filtered' %}">
+                <div class="container btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">
+                    {% for data in line_of_business %}
+                        <input type="checkbox" class="btn-check" value="{{ data.line_of_business }}" name="lob"
+                               id={{ data.line_of_business }} autocomplete="off">
+                        <label class="btn btn-outline-success"
+                               for={{ data.line_of_business }}>{{ data.line_of_business }}</label>
+
+                    {% endfor %}
+                    <br>
+                    <div class="container btn-group-vertical " role="group">
+                        <button type="submit" class="btn btn-success">Виконати</button>
+                        <button type="button" class="btn btn-danger" onclick="window.location.href='/remains'">Скасувати фільтри</button>
+{#                        
+                    </div>
+                </div>
+                
+            </form>
+            
+        </div>
+       
+    </div>
+
+
+
     <div class="container ">
         <table class="table table-striped table-hover table-bordered table-fixed table-responsive">
             <thead>
