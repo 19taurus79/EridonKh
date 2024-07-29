@@ -81,7 +81,7 @@ class RemainsFiltered(RemainsView, ListView):
     def get_queryset(self):
         queryset = Remains.objects.filter(
             line_of_business__in=self.request.GET.getlist("lob")
-        )
+        ).select_related("product")
         return queryset
 
 
