@@ -5,7 +5,7 @@
     {% if request.user.is_authenticated %}
         <div class="container ">
             <div class="row">
-                <div class="col-4">
+                <div class="col-lg-4 col-md-6">
                     <!-- Колонка клиентов -->
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
@@ -26,7 +26,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-2">
+                <div class="col-lg-2 col-md-6">
                     <!--Колонка дополнений-->
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
@@ -45,7 +45,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-6">
+                <div class="col-lg-6 ">
                     <!--Колонка с товаром и количеством-->
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
@@ -60,7 +60,7 @@
                                 <td >{{ product.product__product }}</td>
                                 <td >{{ product.different }}</td>
                             </tr>
-                            
+
                         {% endfor %}
                         </tbody>
                     </table>
