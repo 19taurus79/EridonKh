@@ -6,6 +6,7 @@
         <div class="container ">
             <div class="row">
                 <div class="col-4">
+                    <!-- Колонка клиентов -->
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
                         <tr>
@@ -26,22 +27,44 @@
                     </table>
                 </div>
                 <div class="col-2">
+                    <!--Колонка дополнений-->
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
                         <tr>
-                        <th scope="col">Номер доповнення</th>
+                            <th scope="col">Номер доповнення</th>
                         </tr>
                         </thead>
                         <tbody>
+                        {% for val in object_list %}
                         {% for submission in submissions %}
                             <tr>
-                            <td onclick="window.location.href='#'">{{ submission.contract_supplement }}</td>
+                                <td onclick="window.location.href='{% url 'submissions_prod' client=val.client cont_sub=submission.contract_supplement %}'">{{ submission.contract_supplement }}</td>
                             </tr>
+                        {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <div class="col-6">Тут будут товар и количество</div>
+                <div class="col-6">
+                    <!--Колонка с товаром и количеством-->
+                    <table class="table table-striped table-hover table-bordered table-fixed">
+                        <thead>
+                        <tr>
+                            <th scope="col">Товар</th>
+                            <th scope="col">Кількість</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td >{{ product.product__product }}</td>
+                                <td >{{ product.different }}</td>
+                            </tr>
+                            
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>

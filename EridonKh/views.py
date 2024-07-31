@@ -34,7 +34,7 @@ def user_logout(request):
 #     return render(request, "EridonKh/submissions.html", {"data": data})
 
 
-class SubmissionsView(ListView):
+class SubmissionsClientView(ListView):
 
     # model = Submissions
     template_name = "EridonKh/submissions.html"
@@ -68,9 +68,8 @@ class SubmissionsView(ListView):
             return queryset
 
 
-def submissions_detail(request, client):
+def submissions_number_detail(request, client):
     cl = ClientGuide.objects.all().get(id=client)
-    # cl_list = ClientGuide.objects.values("id", "client").filter(id=client)
     cl_list = ManagerClient.objects.values("client__client", "client").filter(
         client=client
     )
@@ -87,6 +86,25 @@ def submissions_detail(request, client):
             "submissions": data,
             "object_list": cl_list,
         },
+    )
+
+
+def submissions_prod_details(request, client, cont_sub):
+    client = ManagerClient.objects.values("client__client", "client").filter(
+        client=client
+    )
+    contract = (
+        Submissions.objects.values("contract_supplement")
+        .filter(contract_supplement=cont_sub)
+        .distinct()
+    )
+    data = Submissions.objects.values("product__product", "different").filter(
+        contract_supplement=cont_sub
+    )
+    return render(
+        request,
+        "EridonKh/submissions.html",
+        {"products": data, "object_list": client, "submissions": contract},
     )
 
 
