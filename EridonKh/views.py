@@ -57,9 +57,9 @@ class SubmissionsView(ListView):
                 return queryset
             else:
                 queryset = (
-                    ManagerClient.objects.values("client__client")
+                    ManagerClient.objects.values("client__client", "client")
                     .filter(manager__startswith=self.request.user.last_name)
-                    .distinct()
+                    .distinct("client__client")
                     .order_by("client__client")
                 )
                 return queryset
@@ -70,13 +70,24 @@ class SubmissionsView(ListView):
 
 def submissions_detail(request, client):
     cl = ClientGuide.objects.all().get(id=client)
+    # cl_list = ClientGuide.objects.values("id", "client").filter(id=client)
+    cl_list = ManagerClient.objects.values("client__client", "client").filter(
+        client=client
+    )
     data = (
         Submissions.objects.values("contract_supplement")
         .filter(client=cl)
         .distinct()
         .order_by("contract_supplement")
     )
-    return render(request, "EridonKh/test.html", {"data": data})
+    return render(
+        request,
+        "EridonKh/submissions.html",
+        {
+            "submissions": data,
+            "object_list": cl_list,
+        },
+    )
 
 
 class RemainsView(ListView):
