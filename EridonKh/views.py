@@ -58,7 +58,7 @@ class SubmissionsClientView(ListView):
             else:
                 queryset = (
                     ManagerClient.objects.values("client__client", "client")
-                    .filter(manager__exact=self.request.user.last_name)
+                    .filter(manager__manager__startswith=self.request.user.last_name)
                     .distinct("client__client")
                     .order_by("client__client")
                 )
