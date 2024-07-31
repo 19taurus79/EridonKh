@@ -2,9 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 from .forms import LoginForm
-from .models import Submissions, Remains, ManagerClient
+from .models import Submissions, Remains, ManagerClient, ClientGuide
 
 
 def user_login(request):
@@ -36,7 +36,7 @@ def user_logout(request):
 
 class SubmissionsView(ListView):
 
-    model = Submissions
+    # model = Submissions
     template_name = "EridonKh/submissions.html"
     # queryset = Submissions.objects.values("client").order_by("client").distinct()
 
@@ -50,20 +50,33 @@ class SubmissionsView(ListView):
         if self.request.user.is_authenticated:
             if self.request.user.is_superuser:
                 queryset = (
-                    Submissions.objects.values("client").distinct().order_by("client")
+                    ManagerClient.objects.values("client__client", "client")
+                    .distinct("client__client")
+                    .order_by("client__client")
                 )
                 return queryset
             else:
                 queryset = (
-                    Submissions.objects.values("client")
+                    ManagerClient.objects.values("client__client")
                     .filter(manager__startswith=self.request.user.last_name)
                     .distinct()
-                    .order_by("client")
+                    .order_by("client__client")
                 )
                 return queryset
         else:
             queryset = []
             return queryset
+
+
+def submissions_detail(request, client):
+    cl = ClientGuide.objects.all().get(id=client)
+    data = (
+        Submissions.objects.values("contract_supplement")
+        .filter(client=cl)
+        .distinct()
+        .order_by("contract_supplement")
+    )
+    return render(request, "EridonKh/test.html", {"data": data})
 
 
 class RemainsView(ListView):

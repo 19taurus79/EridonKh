@@ -19,9 +19,19 @@ from django.urls import path
 from EridonKh import views
 
 urlpatterns = [
+    # path(
+    #     "submissions/<str:sub_client>/",
+    #     views.submissions_detail,
+    #     name="submissions_detail",
+    # ),
     path("", views.SubmissionsView.as_view(), name="home_page"),
     path("login/", views.user_login, name="user_login"),
     path("logout/", views.user_logout, name="user_logout"),
     path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
     path("remains/", views.RemainsView.as_view(), name="remains_page"),
+    path(
+        "submissions/<uuid:client>",
+        views.submissions_detail,
+        name="submissions",
+    ),
 ]

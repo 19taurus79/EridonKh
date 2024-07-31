@@ -20,14 +20,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-from EridonKh.views import (
-    SubmissionsView,
-    RemainsView,
-    RemainsFiltered,
-    user_login,
-    user_logout,
-)
-
 urlpatterns = [
     path("", include("EridonKh.urls")),
     # path("", SubmissionsView.as_view(), name="home_page"),

@@ -9,20 +9,19 @@
                     <table class="table table-striped table-hover table-bordered table-fixed">
                         <thead>
                         <tr>
-                            {#            <th scope="col">Номер</th>#}
+
                             <th scope="col">Контрагент</th>
-                            {#            <th scope="col">Менеджер</th>#}
-                            {#            <th scope="col">Від діяльності</th>#}
+
                         </tr>
                         </thead>
                         <tbody>
                         {% for val in object_list %}
                             <tr>
 
-                            {#            <td scope="row">{{ val.contract_supplement }}</td>#}
-                            <td scope="row">{{ val.client }}</td>
-                            {#            <td scope="row">{{ val.manager }}</td>#}
-                            {#            <td scope="row">{{ val.line_of_business }}</td>#}
+
+                            <td scope="row" onclick="window.location.href='{% url 'submissions' val.client %}'"> {{ val.client__client }}
+                            </td>
+
 
 
                         {% endfor %}
@@ -32,7 +31,7 @@
                 <div class="col-2">
                     тут будут номера заявок
                 </div>
-            <div class="col-6">Тут будут товар и количество</div>
+                <div class="col-6">Тут будут товар и количество</div>
             </div>
 
         </div>
