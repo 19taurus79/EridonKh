@@ -15,8 +15,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-# from django.urls import path
-#
-# urlpatterns = [
-#     path("/", index),
-# ]
+from django.urls import path
+from EridonKh import views
+
+urlpatterns = [
+    # path(
+    #     "submissions/<str:sub_client>/",
+    #     views.submissions_detail,
+    #     name="submissions_detail",
+    # ),
+    path("", views.SubmissionsClientView.as_view(), name="home_page"),
+    path("login/", views.user_login, name="user_login"),
+    path("logout/", views.user_logout, name="user_logout"),
+    path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
+    path("remains/", views.RemainsView.as_view(), name="remains_page"),
+    path(
+        "submissions/<uuid:client>",
+        views.submissions_number_detail,
+        name="submissions",
+    ),
+    path(
+        "submissions/<uuid:client>/<str:cont_sub>",
+        views.submissions_prod_details,
+        name="submissions_prod",
+    ),
+]

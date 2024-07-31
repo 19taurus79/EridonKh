@@ -2,9 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 from .forms import LoginForm
-from .models import Submissions, Remains, ManagerClient
+from .models import Submissions, Remains, ManagerClient, ClientGuide
 
 
 def user_login(request):
@@ -34,9 +34,9 @@ def user_logout(request):
 #     return render(request, "EridonKh/submissions.html", {"data": data})
 
 
-class SubmissionsView(ListView):
+class SubmissionsClientView(ListView):
 
-    model = Submissions
+    # model = Submissions
     template_name = "EridonKh/submissions.html"
     # queryset = Submissions.objects.values("client").order_by("client").distinct()
 
@@ -50,20 +50,62 @@ class SubmissionsView(ListView):
         if self.request.user.is_authenticated:
             if self.request.user.is_superuser:
                 queryset = (
-                    Submissions.objects.values("client").distinct().order_by("client")
+                    ManagerClient.objects.values("client__client", "client")
+                    .distinct("client__client")
+                    .order_by("client__client")
                 )
                 return queryset
             else:
                 queryset = (
-                    Submissions.objects.values("client")
+                    ManagerClient.objects.values("client__client", "client")
                     .filter(manager__startswith=self.request.user.last_name)
-                    .distinct()
-                    .order_by("client")
+                    .distinct("client__client")
+                    .order_by("client__client")
                 )
                 return queryset
         else:
             queryset = []
             return queryset
+
+
+def submissions_number_detail(request, client):
+    cl = ClientGuide.objects.all().get(id=client)
+    cl_list = ManagerClient.objects.values("client__client", "client").filter(
+        client=client
+    )
+    data = (
+        Submissions.objects.values("contract_supplement")
+        .filter(client=cl)
+        .distinct()
+        .order_by("contract_supplement")
+    )
+    return render(
+        request,
+        "EridonKh/submissions.html",
+        {
+            "submissions": data,
+            "object_list": cl_list,
+        },
+    )
+
+
+def submissions_prod_details(request, client, cont_sub):
+    client = ManagerClient.objects.values("client__client", "client").filter(
+        client=client
+    )
+    contract = (
+        Submissions.objects.values("contract_supplement")
+        .filter(contract_supplement=cont_sub)
+        .distinct()
+    )
+    data = Submissions.objects.values("product__product", "different").filter(
+        contract_supplement=cont_sub
+    )
+    return render(
+        request,
+        "EridonKh/submissions.html",
+        {"products": data, "object_list": client, "submissions": contract},
+    )
 
 
 class RemainsView(ListView):
