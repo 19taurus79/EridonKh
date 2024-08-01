@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 from .forms import LoginForm
 from .models import Submissions, Remains, ManagerClient, ClientGuide
+from django.db.models import Q
 
 
 def user_login(request):
@@ -47,25 +48,52 @@ class SubmissionsClientView(ListView):
     #     return context
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            if self.request.user.is_superuser:
-                queryset = (
-                    ManagerClient.objects.values("client__client", "client")
-                    .distinct("client__client")
-                    .order_by("client__client")
-                )
-                return queryset
-            else:
-                queryset = (
-                    ManagerClient.objects.values("client__client", "client")
-                    .filter(manager__manager__startswith=self.request.user.last_name)
-                    .distinct("client__client")
-                    .order_by("client__client")
-                )
-                return queryset
+        search_field = self.request.GET.get("client_search")
+        if search_field is not None:
+            if self.request.user.is_authenticated:
+                if self.request.user.is_superuser:
+
+                    queryset = (
+                        ManagerClient.objects.values("client__client", "client")
+                        .distinct("client__client")
+                        .order_by("client__client")
+                        .filter(Q(client__client__icontains=search_field))
+                    )
+                    return queryset
+                else:
+                    queryset = (
+                        ManagerClient.objects.values("client__client", "client")
+                        .filter(
+                            manager__manager__startswith=self.request.user.last_name
+                        )
+                        .distinct("client__client")
+                        .order_by("client__client")
+                        .filter(Q(client__client__icontains=search_field))
+                    )
+                    return queryset
         else:
-            queryset = []
-            return queryset
+            if self.request.user.is_authenticated:
+                if self.request.user.is_superuser:
+
+                    queryset = (
+                        ManagerClient.objects.values("client__client", "client")
+                        .distinct("client__client")
+                        .order_by("client__client")
+                    )
+                    return queryset
+                else:
+                    queryset = (
+                        ManagerClient.objects.values("client__client", "client")
+                        .filter(
+                            manager__manager__startswith=self.request.user.last_name
+                        )
+                        .distinct("client__client")
+                        .order_by("client__client")
+                    )
+                    return queryset
+            else:
+                queryset = []
+                return queryset
 
 
 def submissions_number_detail(request, client):
