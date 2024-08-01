@@ -98,8 +98,10 @@ class SubmissionsClientView(ListView):
 
 def submissions_number_detail(request, client):
     cl = ClientGuide.objects.all().get(id=client)
-    cl_list = ManagerClient.objects.values("client__client", "client").filter(
-        client=client
+    cl_list = (
+        ManagerClient.objects.values("client__client", "client")
+        .filter(client=client)
+        .distinct()
     )
     data = (
         Submissions.objects.values("contract_supplement")
@@ -118,8 +120,10 @@ def submissions_number_detail(request, client):
 
 
 def submissions_prod_details(request, client, cont_sub):
-    client = ManagerClient.objects.values("client__client", "client").filter(
-        client=client
+    client = (
+        ManagerClient.objects.values("client__client", "client")
+        .filter(client=client)
+        .distinct()
     )
     contract = (
         Submissions.objects.values("contract_supplement")
