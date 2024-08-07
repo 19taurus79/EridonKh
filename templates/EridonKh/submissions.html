@@ -26,7 +26,8 @@
                         <tbody>
                         {% for val in object_list %}
                             <tr>
-                                <td class="text-center" onclick="window.location.href='{% url 'submissions' val.client %}'"> {{ val.client__client }}
+                                <td class="text-center"
+                                    onclick="window.location.href='{% url 'submissions' val.client %}'"> {{ val.client__client }}
                                 </td>
                             </tr>
 
@@ -40,14 +41,15 @@
                         <thead>
                         <tr>
                             <th class="text-center table-success" scope="col">Номер доповнення</th>
-                            <th  class="text-center table-success" scope="col">Діяльність</th>
+                            <th class="text-center table-success" scope="col">Діяльність</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for val in object_list %}
                             {% for submission in submissions %}
                                 <tr>
-                                    <td class="text-center" onclick="window.location.href='{% url 'submissions_prod' client=val.client cont_sub=submission.contract %}'">{{ submission.contract__contract_supplement }}</td>
+                                    <td class="text-center"
+                                        onclick="window.location.href='{% url 'submissions_prod' client=val.client cont_sub=submission.contract %}'">{{ submission.contract__contract_supplement }}</td>
                                     <td class="text-center">{{ submission.line_of_business__line_of_business }}</td>
                                 </tr>
                             {% endfor %}
@@ -56,35 +58,35 @@
                     </table>
                 </div>
             </div>
-        {% if products %}
-            <div class="row">
-                <div class="col-lg-12 table-responsive">
-                    <!--Колонка с товаром и количеством-->
-                    <table class="table table-striped table-hover table-bordered table-fixed">
-                        <thead>
-                        <tr>
-                            <th class="text-center table-success col-lg-6 col-sm-6" scope="col">Товар</th>
-                            <th class="text-center table-success col-lg-2 col-sm-2 " scope="col">План</th>
-                            <th class="text-center table-success col-lg-2 col-sm-2" scope="col">Факт</th>
-                            <th class="text-center table-success col-lg-2 col-sm-2" scope="col">Залишок</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for product in products %}
+            {% if products %}
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        <!--Колонка с товаром и количеством-->
+                        <table class="table table-striped table-hover table-bordered table-fixed">
+                            <thead>
                             <tr>
-                                <td >{{ product.product__product }}</td>
-                                <td class="text-center">{{ product.plan }}</td>
-                                <td class="text-center">{{ product.fact }}</td>
-                                <td class="text-center">{{ product.different }}</td>
+                                <th class="text-center table-success col-lg-6 col-sm-6" scope="col">Товар</th>
+                                <th class="text-center table-success col-lg-2 col-sm-2 " scope="col">План</th>
+                                <th class="text-center table-success col-lg-2 col-sm-2" scope="col">Факт</th>
+                                <th class="text-center table-success col-lg-2 col-sm-2" scope="col">Залишок</th>
                             </tr>
+                            </thead>
+                            <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ product.product__product }}</td>
+                                    <td class="text-center">{{ product.plan }}</td>
+                                    <td class="text-center">{{ product.fact }}</td>
+                                    <td class="text-center">{{ product.different }}</td>
+                                </tr>
 
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
             {% endif %}
-            </div>
+        </div>
 
         </div>
     {% else %}
