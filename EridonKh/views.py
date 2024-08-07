@@ -210,6 +210,7 @@ class RemainsFiltered(RemainsView, ListView):
         return queryset
 
 
+
 def submissions_manager(request):
     manager_filtered = request.GET.getlist("man")
     data = (
@@ -231,6 +232,7 @@ def submissions_manager(request):
         "EridonKh/submissions.html",
         {"object_list": data, "manager_filter": manager_filter},
     )
+
 
 
 # def remains_view(request):
