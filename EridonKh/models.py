@@ -6,302 +6,284 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from django.db.models import CASCADE
 
 
-class AvailableStock(models.Model):
+class ContractNumber(models.Model):
     id = models.UUIDField(primary_key=True)
-    nomenclature = models.CharField(max_length=255, blank=True, null=True)
-    party_sign = models.CharField(max_length=255, blank=True, null=True)
-    buying_season = models.CharField(max_length=255, blank=True, null=True)
-    division = models.CharField(max_length=255, blank=True, null=True)
-    line_of_business = models.CharField(max_length=255, blank=True, null=True)
-    available = models.FloatField()
-    product = models.ForeignKey(
-        "ProductGuide", models.DO_NOTHING, db_column="product", blank=True, null=True
-    )
+    contract_supplement = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "available_stock"
+
+        db_table = "contract_number"
+
+    def __str__(self):
+        return self.contract_supplement
 
 
-class ClientContract(models.Model):
+class GuideClient(models.Model):
     id = models.UUIDField(primary_key=True)
-    client = models.UUIDField(blank=True, null=True)
-    contract = models.UUIDField(blank=True, null=True)
+    client = models.TextField(blank=True, null=True)
+    company_group = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "client_contract"
 
-
-class ClientGuide(models.Model):
-    id = models.UUIDField(primary_key=True)
-    client = models.CharField(blank=True, null=True)
+        db_table = "guide_client"
 
     def __str__(self):
         return self.client
 
-    class Meta:
-        managed = False
-        db_table = "client_guide"
 
-
-class ContractProduct(models.Model):
+class GuideDivisions(models.Model):
     id = models.UUIDField(primary_key=True)
-    contract = models.UUIDField(blank=True, null=True)
-    product = models.CharField(blank=True, null=True)
-    quantity = models.FloatField(blank=True, null=True)
-    in_delivery = models.BooleanField()
+    division = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "contract_product"
+
+        db_table = "guide_divisions"
+
+    def __str__(self):
+        return self.division
 
 
-class Delivery(models.Model):
+class GuideLineOfBusiness(models.Model):
     id = models.UUIDField(primary_key=True)
-    contract_supplement = models.CharField(blank=True, null=True)
-    product = models.CharField(blank=True, null=True)
-    quantity = models.FloatField(blank=True, null=True)
-    date = models.DateField(blank=True, null=True)
-    manager = models.CharField(blank=True, null=True)
-    client = models.CharField(blank=True, null=True)
-    quantity_delivery = models.FloatField(blank=True, null=True)
-    date_delivery = models.DateField(blank=True, null=True)
-    proove = models.BooleanField(blank=True, null=True)
-    key = models.CharField(blank=True, null=True)
-    delivery_manager_key = models.CharField(blank=True, null=True)
+    line_of_business = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "delivery"
+
+        db_table = "guide_line_of_business"
+
+    def __str__(self):
+        return self.line_of_business
 
 
-class Documents(models.Model):
+class GuideManagers(models.Model):
     id = models.UUIDField(primary_key=True)
-    manager = models.ForeignKey(
-        "ManagerGuideTable",
-        models.DO_NOTHING,
-        db_column="manager",
-        blank=True,
-        null=True,
-    )
-    last_update = models.DateTimeField(blank=True, null=True)
+    manager = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "documents"
 
-
-class GuideContract(models.Model):
-    id = models.UUIDField(primary_key=True)
-    contract = models.CharField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = "guide_contract"
-
-
-class ManagerGuideTable(models.Model):
-    id = models.UUIDField(primary_key=True)
-    manager = models.CharField(blank=True, null=True)
-    manager_email = models.CharField(blank=True, null=True)
-    role = models.CharField(blank=True, null=True)
-    phone = models.CharField(blank=True, null=True)
+        db_table = "guide_managers"
 
     def __str__(self):
         return self.manager
 
-    class Meta:
-        managed = False
-        db_table = "manager_guide_table"
 
-
-class ManagerClient(models.Model):
+class GuideManufacturer(models.Model):
     id = models.UUIDField(primary_key=True)
-    manager = models.ForeignKey(
-        ManagerGuideTable, on_delete=CASCADE, db_column="manager"
-    )
-    client = models.ForeignKey(ClientGuide, on_delete=CASCADE, db_column="client")
+    manufacturer = models.TextField(blank=True, null=True)
 
-    # manager = models.UUIDField(blank=True, null=True)
-    # client = models.UUIDField(blank=True, null=True)
+    class Meta:
+
+        db_table = "guide_manufacturer"
+
     def __str__(self):
-        return f"{self.client} / {self.manager}"
-
-    class Meta:
-        managed = False
-        db_table = "manager_client"
+        return self.manufacturer
 
 
-class MovedData(models.Model):
+class GuideProducts(models.Model):
     id = models.UUIDField(primary_key=True)
-    product = models.CharField(max_length=255)
-    contract = models.CharField(max_length=255, blank=True, null=True)
-    date = models.DateField()
-    line_of_business = models.CharField(max_length=255)
-    qt_order = models.CharField(max_length=255)
-    qt_moved = models.CharField(max_length=255)
-    party_sign = models.CharField(max_length=255)
-    period = models.CharField(max_length=255)
-    order = models.CharField(max_length=255)
-
-    class Meta:
-        managed = False
-        db_table = "moved_data"
-
-
-class Orders(models.Model):
-    id = models.UUIDField(primary_key=True)
-    manager = models.ForeignKey(
-        ManagerGuideTable, models.DO_NOTHING, db_column="manager", blank=True, null=True
-    )
-    client = models.UUIDField(blank=True, null=True)
-    contract = models.ForeignKey(
-        GuideContract, models.DO_NOTHING, db_column="contract", blank=True, null=True
-    )
-
-    class Meta:
-        managed = False
-        db_table = "orders"
-
-
-class OrdersForDelivery(models.Model):
-    id = models.UUIDField(primary_key=True)
-    manager = models.CharField(blank=True, null=True)
-    client = models.CharField(blank=True, null=True)
-    contract = models.CharField(blank=True, null=True)
     product = models.CharField(blank=True, null=True)
-    quantity = models.FloatField(blank=True, null=True)
-    delivery_date = models.DateField(blank=True, null=True)
-    create_time = models.DateTimeField(blank=True, null=True)
-    quantity_in_contract = models.FloatField(blank=True, null=True)
-    document = models.UUIDField(blank=True, null=True)
+    manufacturer = models.ForeignKey(
+        GuideManufacturer,
+        models.DO_NOTHING,
+        db_column="manufacturer",
+        blank=True,
+        null=True,
+    )
+    parent_element = models.TextField(blank=True, null=True)
+    active_ingredient = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "orders_for_delivery"
 
-
-class Payment(models.Model):
-    id = models.UUIDField(primary_key=True)
-    contract_supplement = models.CharField(max_length=255)
-    contract_type = models.CharField(max_length=255)
-    prepayment_amount = models.FloatField()
-    amount_of_credit = models.FloatField()
-    prepayment_percentage = models.FloatField()
-    loan_percentage = models.FloatField()
-    planned_amount = models.FloatField()
-    actual_sale_amount = models.FloatField()
-    actual_payment_amount = models.FloatField()
-    planned_amount_excluding_vat = models.FloatField()
-
-    class Meta:
-        managed = False
-        db_table = "payment"
-
-
-class ProductGuide(models.Model):
-    id = models.UUIDField(primary_key=True)
-    product = models.CharField(unique=True, max_length=255)
-    line_of_business = models.CharField(max_length=255, blank=True, null=True)
-    active_substance = models.CharField(max_length=255, blank=True, null=True)
+        db_table = "guide_products"
 
     def __str__(self):
         return self.product
 
+
+class GuideShippingWarehouses(models.Model):
+    id = models.UUIDField(primary_key=True)
+    shipping_warehouse = models.TextField(blank=True, null=True)
+
     class Meta:
-        managed = False
-        db_table = "product_guide"
+
+        db_table = "guide_shipping_warehouses"
+
+    def __str__(self):
+        return self.shipping_warehouse
 
 
-class ProductUnderSubmissions(models.Model):
+class MovedProducts(models.Model):
+    id = models.UUIDField(primary_key=True)
+    contract = models.ForeignKey(
+        ContractNumber, models.DO_NOTHING, db_column="contract", blank=True, null=True
+    )
+    product = models.ForeignKey(
+        GuideProducts, models.DO_NOTHING, db_column="product", blank=True, null=True
+    )
+    qt_moved = models.TextField(blank=True, null=True)
+    series = models.ForeignKey(
+        "NomenclatureSeries",
+        models.DO_NOTHING,
+        db_column="series",
+        blank=True,
+        null=True,
+    )
+    order = models.TextField(blank=True, null=True)
+
+    class Meta:
+
+        db_table = "moved_products"
+
+
+class NomenclatureSeries(models.Model):
     id = models.UUIDField(primary_key=True)
     product = models.ForeignKey(
-        ProductGuide, models.DO_NOTHING, db_column="product", blank=True, null=True
+        GuideProducts, models.DO_NOTHING, db_column="product", blank=True, null=True
     )
-    quantity = models.FloatField()
+    nomenclature_series = models.TextField(blank=True, null=True)
+    mtn = models.FloatField(blank=True, null=True)
+    origin_country = models.TextField(blank=True, null=True)
+    germination = models.BigIntegerField(blank=True, null=True)
+    crop_year = models.BigIntegerField(blank=True, null=True)
+    quantity_per_pallet = models.TextField(blank=True, null=True)
+    weight = models.TextField(blank=True, null=True)
+    certificate_start_date = models.TextField(blank=True, null=True)
+    certificate_end_date = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = "product_under_submissions"
+
+        db_table = "nomenclature_series"
+
+    def __str__(self):
+        return self.nomenclature_series
+
+
+class Payment(models.Model):
+    id = models.UUIDField(primary_key=True)
+    contract_supplement = models.ForeignKey(
+        ContractNumber,
+        models.DO_NOTHING,
+        db_column="contract_supplement",
+        blank=True,
+        null=True,
+    )
+    contract_type = models.TextField(blank=True, null=True)
+    prepayment_amount = models.FloatField(blank=True, null=True)
+    amount_of_credit = models.FloatField(blank=True, null=True)
+    prepayment_percentage = models.FloatField(blank=True, null=True)
+    loan_percentage = models.FloatField(blank=True, null=True)
+    planned_amount = models.FloatField(blank=True, null=True)
+    planned_amount_excluding_vat = models.FloatField(blank=True, null=True)
+    actual_sale_amount = models.FloatField(blank=True, null=True)
+    actual_payment_amount = models.FloatField(blank=True, null=True)
+
+    class Meta:
+
+        db_table = "payment"
 
 
 class Remains(models.Model):
     id = models.UUIDField(primary_key=True)
-    line_of_business = models.CharField(max_length=255)
-    warehouse = models.CharField(max_length=255, blank=True, null=True)
-    parent_element = models.CharField(max_length=255, blank=True, null=True)
-    nomenclature = models.CharField(max_length=255, blank=True, null=True)
-    party_sign = models.CharField(max_length=255, blank=True, null=True)
-    buying_season = models.CharField(max_length=255, blank=True, null=True)
-    nomenclature_series = models.CharField(max_length=255, blank=True, null=True)
-    mtn = models.CharField(max_length=255, blank=True, null=True)
-    origin_country = models.CharField(max_length=255, blank=True, null=True)
-    germination = models.CharField(max_length=255, blank=True, null=True)
-    crop_year = models.CharField(max_length=255, blank=True, null=True)
-    quantity_per_pallet = models.CharField(max_length=255, blank=True, null=True)
-    active_substance = models.CharField(max_length=255, blank=True, null=True)
-    certificate = models.CharField(max_length=255, blank=True, null=True)
-    certificate_start_date = models.CharField(max_length=255, blank=True, null=True)
-    certificate_end_date = models.CharField(max_length=255, blank=True, null=True)
-    buh = models.FloatField()
-    skl = models.FloatField()
-    weight = models.CharField(max_length=255, blank=True, null=True)
-    product = models.ForeignKey(
-        ProductGuide, models.DO_NOTHING, db_column="product", blank=True, null=True
+    line_of_business = models.ForeignKey(
+        GuideLineOfBusiness,
+        models.DO_NOTHING,
+        db_column="line_of_business",
+        blank=True,
+        null=True,
     )
+    warehouse = models.TextField(blank=True, null=True)
+    product = models.ForeignKey(
+        GuideProducts, models.DO_NOTHING, db_column="product", blank=True, null=True
+    )
+    nomenclature_series = models.ForeignKey(
+        NomenclatureSeries,
+        models.DO_NOTHING,
+        db_column="nomenclature_series",
+        blank=True,
+        null=True,
+    )
+    buh = models.FloatField(blank=True, null=True)
+    skl = models.FloatField(blank=True, null=True)
 
     class Meta:
-        managed = False
+
         db_table = "remains"
+
+    def __str__(self):
+        return f"{self.product.product} {self.nomenclature_series.nomenclature_series}"
+
+
+class ShippingAddress(models.Model):
+    id = models.UUIDField(primary_key=True)
+    client = models.TextField(blank=True, null=True)
+    shipping_address = models.TextField(blank=True, null=True)
+    contract_supplement = models.UUIDField(blank=True, null=True)
+
+    class Meta:
+
+        db_table = "shipping_address"
+
+    def __str__(self):
+        return self.shipping_address
 
 
 class Submissions(models.Model):
     id = models.UUIDField(primary_key=True)
-    division = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="Підрозділ"
-    )
-    manager = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="Менеджер"
-    )
-    company_group = models.CharField(max_length=255, blank=True, null=True)
-    client = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="Контрагент"
-    )
-    contract_supplement = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="Доповнення"
-    )
-    parent_element = models.CharField(max_length=255, blank=True, null=True)
-    manufacturer = models.CharField(max_length=255, blank=True, null=True)
-    active_ingredient = models.CharField(max_length=255, blank=True, null=True)
-    nomenclature = models.CharField(max_length=255, blank=True, null=True)
-    party_sign = models.CharField(max_length=255, blank=True, null=True)
-    buying_season = models.CharField(max_length=255, blank=True, null=True)
-    line_of_business = models.CharField(max_length=255, blank=True, null=True)
-    period = models.CharField(max_length=255, blank=True, null=True)
-    shipping_warehouse = models.CharField(max_length=255, blank=True, null=True)
-    document_status = models.CharField(max_length=255, blank=True, null=True)
-    delivery_status = models.CharField(max_length=255, blank=True, null=True)
-    shipping_address = models.CharField(max_length=255, blank=True, null=True)
-    transport = models.CharField(max_length=255, blank=True, null=True)
-    plan = models.FloatField(verbose_name="Заплановано")
-    fact = models.FloatField(verbose_name="Реалізовано")
-    different = models.FloatField(verbose_name="Залишилось реалізувати")
-    product = models.ForeignKey(
-        ProductGuide,
+    contract = models.ForeignKey(
+        ContractNumber,
         models.DO_NOTHING,
-        db_column="product",
         blank=True,
         null=True,
-        verbose_name="Товар",
+        db_column="contract",
     )
-
-    def __str__(self):
-        return f"{self.client} {self.line_of_business} {self.contract_supplement}"
+    manager = models.ForeignKey(
+        GuideManagers, models.DO_NOTHING, blank=True, null=True, db_column="manager"
+    )
+    client = models.ForeignKey(
+        GuideClient, models.DO_NOTHING, blank=True, null=True, db_column="client"
+    )
+    manufacturer = models.ForeignKey(
+        GuideManufacturer,
+        models.DO_NOTHING,
+        blank=True,
+        null=True,
+        db_column="manufacturer",
+    )
+    line_of_business = models.ForeignKey(
+        GuideLineOfBusiness,
+        models.DO_NOTHING,
+        blank=True,
+        null=True,
+        db_column="line_of_business",
+    )
+    period = models.BigIntegerField(blank=True, null=True)
+    shipping_warehouse = models.TextField(blank=True, null=True)
+    shipping_address = models.UUIDField(blank=True, null=True)
+    product = models.ForeignKey(GuideProducts, models.DO_NOTHING, db_column="product")
+    plan = models.FloatField(blank=True, null=True)
+    fact = models.FloatField(blank=True, null=True)
+    different = models.FloatField(blank=True, null=True)
 
     class Meta:
-        managed = False
+
         db_table = "submissions"
+
+    def __str__(self):
+        return f"{self.contract} {self.client} {self.line_of_business}"
+
+
+class AvailableStocks(models.Model):
+    id = models.UUIDField(primary_key=True)
+    division = models.ForeignKey(
+        "GuideDivisions", models.DO_NOTHING, db_column="division", blank=True, null=True
+    )
+    product = models.ForeignKey(
+        "GuideProducts", models.DO_NOTHING, db_column="product", blank=True, null=True
+    )
+    available = models.TextField(blank=True, null=True)
+
+    class Meta:
+
+        db_table = "available_stocks"

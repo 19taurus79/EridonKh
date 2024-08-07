@@ -27,7 +27,7 @@ urlpatterns = [
     path("", views.SubmissionsClientView.as_view(), name="home_page"),
     path("login/", views.user_login, name="user_login"),
     path("logout/", views.user_logout, name="user_logout"),
-    path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
+    # path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
     path("remains/", views.RemainsView.as_view(), name="remains_page"),
     path(
         "submissions/<uuid:client>",
@@ -35,7 +35,7 @@ urlpatterns = [
         name="submissions",
     ),
     path(
-        "submissions/<uuid:client>/<str:cont_sub>",
+        "submissions/<uuid:client>/<uuid:cont_sub>",
         views.submissions_prod_details,
         name="submissions_prod",
     ),
