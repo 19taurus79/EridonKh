@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -149,12 +151,14 @@ class RemainsView(ListView):
             "Власне виробництво насіння",
             "Насіння",
         ]
-    ).select_related("product")
+    ).select_related("product", "line_of_business", "nomenclature_series")
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context["line_of_business"] = (
-            Remains.objects.values("line_of_business__line_of_business")
+            Remains.objects.values(
+                "line_of_business__line_of_business", "line_of_business"
+            )
             .filter(
                 line_of_business__line_of_business__in=[
                     "ЗЗР",
@@ -170,12 +174,15 @@ class RemainsView(ListView):
         return context
 
 
-# class RemainsFiltered(RemainsView, ListView):
-#     def get_queryset(self):
-#         queryset = Remains.objects.filter(
-#             line_of_business__in=self.request.GET.getlist("lob")
-#         ).select_related("product")
-#         return queryset
+class RemainsFiltered(RemainsView, ListView):
+    def get_queryset(self):
+        lob = self.request.GET.getlist("lob")
+        queryset = (
+            Remains.objects.filter(line_of_business__line_of_business__in=lob)
+            .select_related("product", "line_of_business", "nomenclature_series")
+            .order_by("product__product")
+        )
+        return queryset
 
 
 # def remains_view(request):

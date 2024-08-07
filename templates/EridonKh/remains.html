@@ -15,10 +15,10 @@
             <form method="get" action="{% url 'remains_filtered' %}">
                 <div class="container btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">
                     {% for data in line_of_business %}
-                        <input type="checkbox" class="btn-check" value="{{ data.line_of_business }}" name="lob"
-                               id={{ data.line_of_business }} autocomplete="off">
+                        <input type="checkbox" class="btn-check" value="{{ data.line_of_business__line_of_business }}" name="lob"
+                               id={{ data.line_of_business__line_of_business }} autocomplete="off">
                         <label class="btn btn-outline-success"
-                               for={{ data.line_of_business }}>{{ data.line_of_business }}</label>
+                               for={{ data.line_of_business__line_of_business }}>{{ data.line_of_business__line_of_business }}</label>
 
                     {% endfor %}
                     <br>
