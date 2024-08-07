@@ -4,10 +4,11 @@
     <br/>
     {% if request.user.is_authenticated %}
         <div class="container col-lg-6 col-md-10">
-        <form action="{% url 'home_page' %}" method="get" class="d-flex" role="search">
-            <input name="client_search" class="form-control me-2" type="search" placeholder="Пошук" aria-label="Search">
-            <button class="btn btn-outline-success btn-light btn-outline-dark" type="submit">Пошук</button>
-        </form>
+            <form action="{% url 'home_page' %}" method="get" class="d-flex" role="search">
+                <input name="client_search" class="form-control me-2" type="search" placeholder="Пошук"
+                       aria-label="Search">
+                <button class="btn btn-outline-success btn-light btn-outline-dark" type="submit">Пошук</button>
+            </form>
         </div>
         <br>
         <div class="container ">
@@ -39,15 +40,17 @@
                         <thead>
                         <tr>
                             <th scope="col">Номер доповнення</th>
+                            <th scope="col">Діяльність</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for val in object_list %}
-                        {% for submission in submissions %}
-                            <tr>
-                                <td onclick="window.location.href='{% url 'submissions_prod' client=val.client cont_sub=submission.contract_supplement %}'">{{ submission.contract_supplement }}</td>
-                            </tr>
-                        {% endfor %}
+                            {% for submission in submissions %}
+                                <tr>
+                                    <td class="text-center" onclick="window.location.href='{% url 'submissions_prod' client=val.client cont_sub=submission.contract %}'">{{ submission.contract__contract_supplement }}</td>
+                                    <td class="text-center">{{ submission.line_of_business__line_of_business }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -58,14 +61,18 @@
                         <thead>
                         <tr>
                             <th scope="col">Товар</th>
-                            <th scope="col">Кількість</th>
+                            <th scope="col">Заплановано</th>
+                            <th scope="col">Реалізовано</th>
+                            <th scope="col">Залишилось</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for product in products %}
                             <tr>
-                                <td >{{ product.product__product }}</td>
-                                <td >{{ product.different }}</td>
+                                <td>{{ product.product__product }}</td>
+                                <td class="text-center">{{ product.plan }}</td>
+                                <td class="text-center">{{ product.fact }}</td>
+                                <td class="text-center">{{ product.different }}</td>
                             </tr>
 
                         {% endfor %}

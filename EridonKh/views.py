@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 from .forms import LoginForm
-from .models import Submissions, Remains, ManagerClient, ClientGuide
+from .models import Submissions, Remains, GuideClient
 from django.db.models import Q
 
 
@@ -29,23 +29,8 @@ def user_logout(request):
     return HttpResponseRedirect(reverse("home_page"))
 
 
-# Create your views here.
-# def index_view(request):
-#     data = Submissions.objects.values("client").order_by("client").distinct()
-#     return render(request, "EridonKh/submissions.html", {"data": data})
-
-
 class SubmissionsClientView(ListView):
-
-    # model = Submissions
     template_name = "EridonKh/submissions.html"
-    # queryset = Submissions.objects.values("client").order_by("client").distinct()
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["test"] = "test"
-    #     context["user"] = self.request.user
-    #     return context
 
     def get_queryset(self):
         search_field = self.request.GET.get("client_search")
@@ -54,42 +39,42 @@ class SubmissionsClientView(ListView):
                 if self.request.user.is_superuser:
 
                     queryset = (
-                        ManagerClient.objects.values("client__client", "client")
+                        Submissions.objects.values(
+                            "contract__contract_supplement",
+                            "client__client",
+                            "client",
+                        )
+                        .filter(client__client__icontains=search_field)
                         .distinct("client__client")
-                        .order_by("client__client")
-                        .filter(Q(client__client__icontains=search_field))
                     )
                     return queryset
                 else:
                     queryset = (
-                        ManagerClient.objects.values("client__client", "client")
+                        Submissions.objects.values(
+                            "contract__contract_supplement",
+                            "client__client",
+                        )
                         .filter(
                             manager__manager__startswith=self.request.user.last_name
                         )
-                        .distinct("client__client")
-                        .order_by("client__client")
                         .filter(Q(client__client__icontains=search_field))
+                        .distinct("client__client")
                     )
                     return queryset
         else:
             if self.request.user.is_authenticated:
                 if self.request.user.is_superuser:
 
-                    queryset = (
-                        ManagerClient.objects.values("client__client", "client")
-                        .distinct("client__client")
-                        .order_by("client__client")
-                    )
+                    queryset = Submissions.objects.values(
+                        "client",
+                        "client__client",
+                    ).distinct("client__client")
                     return queryset
                 else:
-                    queryset = (
-                        ManagerClient.objects.values("client__client", "client")
-                        .filter(
-                            manager__manager__startswith=self.request.user.last_name
-                        )
-                        .distinct("client__client")
-                        .order_by("client__client")
-                    )
+                    queryset = Submissions.objects.values(
+                        "contract__contract_supplement",
+                        "client__client",
+                    ).filter(manager__manager__startswith=self.request.user.last_name)
                     return queryset
             else:
                 queryset = []
@@ -97,17 +82,23 @@ class SubmissionsClientView(ListView):
 
 
 def submissions_number_detail(request, client):
-    cl = ClientGuide.objects.all().get(id=client)
     cl_list = (
-        ManagerClient.objects.values("client__client", "client")
+        Submissions.objects.values("client__client", "client")
         .filter(client=client)
         .distinct()
     )
     data = (
-        Submissions.objects.values("contract_supplement")
-        .filter(client=cl)
+        Submissions.objects.values(
+            "contract",
+            "contract__contract_supplement",
+            "client",
+            "client__client",
+            "line_of_business",
+            "line_of_business__line_of_business",
+        )
+        .filter(client=client)
         .distinct()
-        .order_by("contract_supplement")
+        .order_by("contract__contract_supplement")
     )
     return render(
         request,
@@ -120,23 +111,30 @@ def submissions_number_detail(request, client):
 
 
 def submissions_prod_details(request, client, cont_sub):
-    client = (
-        ManagerClient.objects.values("client__client", "client")
+    cl_list = (
+        Submissions.objects.values("client__client", "client")
         .filter(client=client)
         .distinct()
     )
     contract = (
-        Submissions.objects.values("contract_supplement")
-        .filter(contract_supplement=cont_sub)
+        Submissions.objects.values(
+            "contract__contract_supplement",
+            "contract",
+            "line_of_business",
+            "line_of_business__line_of_business",
+        )
+        .filter(contract=cont_sub)
         .distinct()
     )
-    data = Submissions.objects.values("product__product", "different").filter(
-        contract_supplement=cont_sub
+    data = (
+        Submissions.objects.values("product__product", "different", "plan", "fact")
+        .filter(contract=cont_sub)
+        .distinct()
     )
     return render(
         request,
         "EridonKh/submissions.html",
-        {"products": data, "object_list": client, "submissions": contract},
+        {"products": data, "object_list": cl_list, "submissions": contract},
     )
 
 
@@ -144,7 +142,7 @@ class RemainsView(ListView):
     model = Remains
     template_name = "EridonKh/remains.html"
     queryset = Remains.objects.filter(
-        line_of_business__in=[
+        line_of_business__line_of_business__in=[
             "ЗЗР",
             "Позакореневi добрива",
             "Міндобрива (основні)",
@@ -156,9 +154,9 @@ class RemainsView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context["line_of_business"] = (
-            Remains.objects.values("line_of_business")
+            Remains.objects.values("line_of_business__line_of_business")
             .filter(
-                line_of_business__in=[
+                line_of_business__line_of_business__in=[
                     "ЗЗР",
                     "Позакореневi добрива",
                     "Міндобрива (основні)",
@@ -166,37 +164,37 @@ class RemainsView(ListView):
                     "Насіння",
                 ]
             )
-            .order_by("line_of_business")
+            .order_by("line_of_business__line_of_business")
             .distinct()
         )
         return context
 
 
-class RemainsFiltered(RemainsView, ListView):
-    def get_queryset(self):
-        queryset = Remains.objects.filter(
-            line_of_business__in=self.request.GET.getlist("lob")
-        ).select_related("product")
-        return queryset
+# class RemainsFiltered(RemainsView, ListView):
+#     def get_queryset(self):
+#         queryset = Remains.objects.filter(
+#             line_of_business__in=self.request.GET.getlist("lob")
+#         ).select_related("product")
+#         return queryset
 
 
-def remains_view(request):
-    data = Remains.objects.filter(
-        line_of_business__in=[
-            "ЗЗР",
-            "Позакореневi добрива",
-            "Міндобрива (основні)",
-            "Власне виробництво насіння",
-            "Насіння",
-        ]
-    ).select_related("product")
-    guide_line_of_business = (
-        Remains.objects.values("line_of_business")
-        .order_by("line_of_business")
-        .distinct()
-    )
-    return render(
-        request,
-        "EridonKh/remains.html",
-        context={"data": data, "line_of_business": guide_line_of_business},
-    )
+# def remains_view(request):
+#     data = Remains.objects.filter(
+#         line_of_business__in=[
+#             "ЗЗР",
+#             "Позакореневi добрива",
+#             "Міндобрива (основні)",
+#             "Власне виробництво насіння",
+#             "Насіння",
+#         ]
+#     ).select_related("product")
+#     guide_line_of_business = (
+#         Remains.objects.values("line_of_business")
+#         .order_by("line_of_business")
+#         .distinct()
+#     )
+#     return render(
+#         request,
+#         "EridonKh/remains.html",
+#         context={"data": data, "line_of_business": guide_line_of_business},
+#     )
