@@ -39,4 +39,9 @@ urlpatterns = [
         views.submissions_prod_details,
         name="submissions_prod",
     ),
+    path(
+        "submissions_filtered/",
+        views.submissions_manager,
+        name="submissions_manager",
+    ),
 ]
