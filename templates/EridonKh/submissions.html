@@ -3,6 +3,37 @@
 {% block content %}
     <br/>
     {% if request.user.is_authenticated %}
+        <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+         aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Фільтри</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+
+            <form method="get" action="{% url 'submissions_manager' %}">
+                <div class="container btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">
+                    {% for data in manager_filter %}
+                        <input type="checkbox" class="btn-check" value="{{ data.manager__manager }}" name="man"
+                               id={{ data.manager__manager }} autocomplete="off">
+                        <label class="btn btn-outline-success"
+                               for={{ data.manager__manager}}>{{ data.manager__manager }}</label>
+
+                    {% endfor %}
+                    <br>
+                    <div class="container btn-group-vertical " role="group">
+                        <button type="submit" class="btn btn-success">Виконати</button>
+                        <button type="button" class="btn btn-danger" onclick="window.location.href='/'">Скасувати
+                            фільтри
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
         <div class="container col-lg-6 col-md-10">
             <form action="{% url 'home_page' %}" method="get" class="d-flex" role="search">
                 <input name="client_search" class="form-control me-2" type="search" placeholder="Пошук"
@@ -19,7 +50,8 @@
                         <thead>
                         <tr>
 
-                            <th class="text-center table-success" scope="col">Контрагент</th>
+                            <th class="text-center table-success " scope="col" onclick="history.back()">Контрагент</th>
+
 
                         </tr>
                         </thead>

@@ -45,6 +45,8 @@ class SubmissionsClientView(ListView):
                             "contract__contract_supplement",
                             "client__client",
                             "client",
+                            "line_of_business",
+                            "line_of_business__line_of_business",
                         )
                         .filter(client__client__icontains=search_field)
                         .distinct("client__client")
@@ -55,6 +57,9 @@ class SubmissionsClientView(ListView):
                         Submissions.objects.values(
                             "contract__contract_supplement",
                             "client__client",
+                            "client",
+                            "line_of_business",
+                            "line_of_business__line_of_business",
                         )
                         .filter(
                             manager__manager__startswith=self.request.user.last_name
@@ -68,19 +73,35 @@ class SubmissionsClientView(ListView):
                 if self.request.user.is_superuser:
 
                     queryset = Submissions.objects.values(
-                        "client",
+                        "contract__contract_supplement",
                         "client__client",
+                        "client",
+                        "line_of_business",
+                        "line_of_business__line_of_business",
                     ).distinct("client__client")
                     return queryset
                 else:
                     queryset = Submissions.objects.values(
                         "contract__contract_supplement",
                         "client__client",
+                        "client",
+                        "line_of_business",
+                        "line_of_business__line_of_business",
                     ).filter(manager__manager__startswith=self.request.user.last_name)
                     return queryset
             else:
                 queryset = []
                 return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["l_o_b"] = Submissions.objects.values(
+            "line_of_business__line_of_business", "line_of_business"
+        ).distinct("line_of_business__line_of_business")
+        context["manager_filter"] = Submissions.objects.values(
+            "manager", "manager__manager"
+        ).distinct("manager__manager")
+        return context
 
 
 def submissions_number_detail(request, client):
@@ -102,12 +123,16 @@ def submissions_number_detail(request, client):
         .distinct()
         .order_by("contract__contract_supplement")
     )
+    manager_filter = Submissions.objects.values("manager", "manager__manager").distinct(
+        "manager__manager"
+    )
     return render(
         request,
         "EridonKh/submissions.html",
         {
             "submissions": data,
             "object_list": cl_list,
+            "manager_filter": manager_filter,
         },
     )
 
@@ -183,6 +208,31 @@ class RemainsFiltered(RemainsView, ListView):
             .order_by("product__product")
         )
         return queryset
+
+
+
+def submissions_manager(request):
+    manager_filtered = request.GET.getlist("man")
+    data = (
+        Submissions.objects.values(
+            "contract__contract_supplement",
+            "client__client",
+            "client",
+            "line_of_business",
+            "line_of_business__line_of_business",
+        )
+        .filter(manager__manager__in=manager_filtered)
+        .distinct("client__client")
+    )
+    manager_filter = Submissions.objects.values("manager", "manager__manager").distinct(
+        "manager__manager"
+    )
+    return render(
+        request,
+        "EridonKh/submissions.html",
+        {"object_list": data, "manager_filter": manager_filter},
+    )
+
 
 
 # def remains_view(request):
