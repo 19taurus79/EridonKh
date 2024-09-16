@@ -166,54 +166,54 @@ class SubmissionsView(ListView):
     )
 
 
-def submissions_number_detail(request, client):
-    previous_complete = (request.session.get("previuos_data_completed"),)
-    previous_manager = (request.session.get("previous_data_manager"),)
-    previous_payment = (request.session.get("previous_data_payment"),)
-    cl_list = (
-        Submissions.objects.values("client__client", "client")
-        .filter(client=client)
-        .distinct()
-    )
-
-    data = (
-        Submissions.objects.values(
-            "contract",
-            "contract__contract_supplement",
-            "client",
-            "client__client",
-            "line_of_business",
-            "line_of_business__line_of_business",
-        )
-        .filter(client=client)
-        .distinct()
-        .order_by("contract__contract_supplement")
-    )
-    if previous_complete[0] is not None:
-        if previous_complete == "Виконані":
-            data = data.filter(different=0)
-        else:
-            data = data.filter(different__gt=0)
-
-    manager_filter = Submissions.objects.values("manager", "manager__manager").distinct(
-        "manager__manager"
-    )
-    payment = ["Оплачені", "Не_оплачені"]
-    type_submissions = ["Виконані", "Не_виконані"]
-    return render(
-        request,
-        "EridonKh/../djangoProjectKh/submissions.html",
-        {
-            "submissions": data,
-            "object_list": cl_list,
-            "manager_filter": manager_filter,
-            "payment": payment,
-            "previous_manager": request.session.get("previous_data_manager"),
-            "previous_payment": request.session.get("previous_data_payment"),
-            "type_submissions": type_submissions,
-            "previous_type": request.session.get("previuos_data_completed"),
-        },
-    )
+# def submissions_number_detail(request, client):
+#     previous_complete = (request.session.get("previuos_data_completed"),)
+#     previous_manager = (request.session.get("previous_data_manager"),)
+#     previous_payment = (request.session.get("previous_data_payment"),)
+#     cl_list = (
+#         Submissions.objects.values("client__client", "client")
+#         .filter(client=client)
+#         .distinct()
+#     )
+#
+#     data = (
+#         Submissions.objects.values(
+#             "contract",
+#             "contract__contract_supplement",
+#             "client",
+#             "client__client",
+#             "line_of_business",
+#             "line_of_business__line_of_business",
+#         )
+#         .filter(client=client)
+#         .distinct()
+#         .order_by("contract__contract_supplement")
+#     )
+#     if previous_complete[0] is not None:
+#         if previous_complete == "Виконані":
+#             data = data.filter(different=0)
+#         else:
+#             data = data.filter(different__gt=0)
+#
+#     manager_filter = Submissions.objects.values("manager", "manager__manager").distinct(
+#         "manager__manager"
+#     )
+#     payment = ["Оплачені", "Не_оплачені"]
+#     type_submissions = ["Виконані", "Не_виконані"]
+#     return render(
+#         request,
+#         "EridonKh/../djangoProjectKh/submissions.html",
+#         {
+#             "submissions": data,
+#             "object_list": cl_list,
+#             "manager_filter": manager_filter,
+#             "payment": payment,
+#             "previous_manager": request.session.get("previous_data_manager"),
+#             "previous_payment": request.session.get("previous_data_payment"),
+#             "type_submissions": type_submissions,
+#             "previous_type": request.session.get("previuos_data_completed"),
+#         },
+#     )
 
 
 class ClientSubmissions(FilterView):

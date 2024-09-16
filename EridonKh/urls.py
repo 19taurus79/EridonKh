@@ -45,10 +45,10 @@ urlpatterns = [
         views.submissions_prod_details,
         name="submissions_prod",
     ),
-    path("submissions_payment/", views.submissions_pay, name="submissions_pay"),
-    path(
-        "submissions_filtered/",
-        views.submissions_manager,
-        name="submissions_manager",
-    ),
+    # path("submissions_payment/", views.submissions_pay, name="submissions_pay"),
+    # path(
+    #     "submissions_filtered/",
+    #     views.submissions_manager,
+    #     name="submissions_manager",
+    # ),
 ]
