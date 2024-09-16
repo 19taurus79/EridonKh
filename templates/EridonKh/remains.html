@@ -15,7 +15,8 @@
             <form method="get" action="{% url 'remains_filtered' %}">
                 <div class="container btn-group-vertical" role="group" aria-label="Basic checkbox toggle button group">
                     {% for data in line_of_business %}
-                        <input type="checkbox" class="btn-check" value="{{ data.line_of_business__line_of_business }}" name="lob"
+                        <input type="checkbox" class="btn-check" value="{{ data.line_of_business__line_of_business }}"
+                               name="lob"
                                id={{ data.line_of_business__line_of_business }} autocomplete="off">
                         <label class="btn btn-outline-success"
                                for={{ data.line_of_business__line_of_business }}>{{ data.line_of_business__line_of_business }}</label>
@@ -36,8 +37,15 @@
 
     </div>
 
-
-
+    <div class="container col-lg-6 col-md-10">
+{#        <form action="{% url 'remains_page' %}" method="get" class="d-flex" role="search">#}
+{#            <input name="product_search" class="form-control me-2" type="search" placeholder="Пошук"#}
+{#                   aria-label="Search">#}
+{#            <button class="btn btn-outline-success btn-light btn-outline-dark" type="submit">Пошук</button>#}
+{#        </form>#}
+    <input class="form-control" id="myInput" type="text" placeholder="Пошук..">
+    </div>
+    <br>
     <div class="container ">
         <table class="table table-sm table-striped table-hover table-bordered table-fixed table-responsive">
             <thead>
@@ -48,18 +56,28 @@
                 <th scope="col">Склад облік</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="myTable">
             {% for val in object_list %}
                 <tr>
 
-                <td>{{ val.product }}</td>
-                <td>{{ val.nomenclature_series }}</td>
-                <td>{{ val.buh }}</td>
-                <td>{{ val.skl }}</td>
+                    <td>{{ val.product }}</td>
+                    <td>{{ val.nomenclature_series }}</td>
+                    <td>{{ val.buh }}</td>
+                    <td>{{ val.skl }}</td>
                 </tr>
 
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
 {% endblock %}

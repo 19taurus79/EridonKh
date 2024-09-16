@@ -1,0 +1,29 @@
+{% extends 'EridonKh/index.html' %}
+{% block content %}
+    <br>
+    <div class="container">
+    <table class="table table-striped table-hover table-bordered table-fixed">
+        <thead>
+        <tr>
+            <th class="table-secondary"  scope="col">Товар</th>
+            <th class="table-secondary"  scope="col">Заплановано</th>
+            <th class="table-secondary" scope="col">Реалізовано</th>
+            <th class="table-secondary" scope="col">Залишилось реалізувати</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for contract in contracts %}
+
+            <tr>
+                <td>{{ contract.product__product }}</td>
+                <td>{{ contract.plan }}</td>
+                <td>{{ contract.fact }}</td>
+                <td>{{ contract.different }}</td>
+            </tr>
+
+
+        {% endfor %}
+        </tbody>
+    </table>
+        </div>
+{% endblock %}
