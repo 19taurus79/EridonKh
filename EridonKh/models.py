@@ -178,6 +178,7 @@ class Payment(models.Model):
     planned_amount_excluding_vat = models.FloatField(blank=True, null=True)
     actual_sale_amount = models.FloatField(blank=True, null=True)
     actual_payment_amount = models.FloatField(blank=True, null=True)
+    paid = models.BooleanField(blank=True, null=True)
 
     class Meta:
 
@@ -265,6 +266,9 @@ class Submissions(models.Model):
     plan = models.FloatField(blank=True, null=True)
     fact = models.FloatField(blank=True, null=True)
     different = models.FloatField(blank=True, null=True)
+    payment = models.ForeignKey(
+        Payment, models.DO_NOTHING, db_column="payment", blank=True, null=True
+    )
 
     class Meta:
 

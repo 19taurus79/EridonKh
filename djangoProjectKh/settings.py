@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "EridonKh.apps.EridonkhConfig",
     "debug_toolbar",
+    "django_extensions",
+    "django_filters",
 ]
 
 MIDDLEWARE = [

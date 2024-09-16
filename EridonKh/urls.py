@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.urls import path
+
 from EridonKh import views
 
 urlpatterns = [
@@ -24,21 +25,27 @@ urlpatterns = [
     #     views.submissions_detail,
     #     name="submissions_detail",
     # ),
-    path("", views.SubmissionsClientView.as_view(), name="home_page"),
+    path("", views.ClientView.as_view(), name="home_page"),
     path("login/", views.user_login, name="user_login"),
     path("logout/", views.user_logout, name="user_logout"),
     path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
     path("remains/", views.RemainsView.as_view(), name="remains_page"),
     path(
         "submissions/<uuid:client>",
-        views.submissions_number_detail,
+        views.ClientSubmissions.as_view(),
         name="submissions",
+    ),
+    path(
+        "details/<uuid:contract>",
+        views.ContractDetails.as_view(),
+        name="contract_details",
     ),
     path(
         "submissions/<uuid:client>/<uuid:cont_sub>",
         views.submissions_prod_details,
         name="submissions_prod",
     ),
+    path("submissions_payment/", views.submissions_pay, name="submissions_pay"),
     path(
         "submissions_filtered/",
         views.submissions_manager,

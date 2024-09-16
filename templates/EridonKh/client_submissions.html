@@ -1,0 +1,32 @@
+{% extends 'EridonKh/index.html' %}
+
+{% block content %}
+    <br>
+<div class="container">
+
+    <table class="table table-striped table-hover table-bordered table-fixed">
+        <thead>
+        <tr>
+            <th class="table-secondary"  scope="col">Номер Доповнення</th>
+            <th class="table-secondary" scope="col">Від діяльності</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sub in client_submissions %}
+            {% if sub.payment.paid is True %}
+            <tr class="table-success">
+                <td onclick="window.location.href='{% url 'contract_details' sub.contract.id %}'">{{ sub.contract }}</td>
+                <td>{{ sub.line_of_business }}</td>
+            </tr>
+            {% else %}
+            <tr class="table-danger">
+                <td onclick="window.location.href='{% url 'contract_details' sub.contract.id %}'">{{ sub.contract }}</td>
+                <td>{{ sub.line_of_business }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
