@@ -231,6 +231,7 @@ class ClientSubmissions(FilterView):
             "contract__contract_supplement"
         )
         return storage_data.filter(client=client)
+
         # return (
         #     Submissions.objects.filter(client=client)
         #     .select_related(
