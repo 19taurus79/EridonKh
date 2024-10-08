@@ -18,10 +18,11 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v2
         with:
-          paths-ignore: 
-            -"F401"
-            -"W405"
-            -"E501"
+          ignore: "F401","W405"
+          max-line-length: "120"
+            
+            
+            
 
 
 
