@@ -21,7 +21,7 @@ jobs:
           paths-ignore: 
             -"F401"
             -"W405"
-          max-line-length: "120"
+
 
 
   black:
