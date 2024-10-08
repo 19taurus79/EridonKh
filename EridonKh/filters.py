@@ -1,7 +1,7 @@
 import django_filters
 from django_filters.filters import ChoiceFilter
 from django_filters.filterset import FilterSet
-from .models import Submissions, GuideLineOfBusiness, Payment
+from .models import Submissions, GuideLineOfBusiness, Remains
 
 
 class SubmissionsFilters(FilterSet):
@@ -29,3 +29,10 @@ class SubmissionsFilters(FilterSet):
         # label = {"Payment paid": "Оплата", "line_of_business": "Від діяльності"}
 
     # field_name = {"payment__paid": "Payment"}
+
+
+class RemainsFilters(FilterSet):
+    line_of_business = django_filters.ModelChoiceFilter(
+        label="Від діяльності",
+        queryset=GuideLineOfBusiness.objects.all(),
+    )

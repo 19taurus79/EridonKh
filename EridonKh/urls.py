@@ -31,6 +31,11 @@ urlpatterns = [
     path("filter/", views.RemainsFiltered.as_view(), name="remains_filtered"),
     path("remains/", views.RemainsView.as_view(), name="remains_page"),
     path(
+        "remains/<uuid:product>",
+        views.RemainsDetailView.as_view(),
+        name="remains_detail",
+    ),
+    path(
         "submissions/<uuid:client>",
         views.ClientSubmissions.as_view(),
         name="submissions",
