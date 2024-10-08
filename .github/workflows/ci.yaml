@@ -21,6 +21,7 @@ jobs:
           paths-ignore: 
             -"F401"
             -"W405"
+            -"E501"
 
 
 
