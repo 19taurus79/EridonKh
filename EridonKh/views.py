@@ -3,13 +3,13 @@ from django.core import serializers
 from .storage import QuerySetStorage
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 from django_filters.views import FilterView
+from django.db.models import Q, Sum
 
-
-from .filters import SubmissionsFilters
+from .filters import SubmissionsFilters, RemainsFilters
 from .forms import LoginForm
 from .models import Submissions, Remains, GuideClient, Payment
 
@@ -292,21 +292,28 @@ def submissions_prod_details(request, client, cont_sub):
     )
 
 
-class RemainsView(ListView):
+class RemainsView(FilterView):
     model = Remains
     template_name = "EridonKh/remains.html"
+    filterset_class = RemainsFilters
     queryset = (
         Remains.objects.filter(
-            line_of_business__line_of_business__in=[
-                "ЗЗР",
-                "Позакореневi добрива",
-                "Міндобрива (основні)",
-                "Власне виробництво насіння",
-                "Насіння",
-            ]
+            Q(
+                line_of_business__line_of_business__in=[
+                    "ЗЗР",
+                    "Позакореневi добрива",
+                    "Міндобрива (основні)",
+                    "Власне виробництво насіння",
+                    "Насіння",
+                ]
+            )
+            & Q(warehouse='Харківський підрозділ  ТОВ "Фірма Ерідон" с.Коротич')
         )
         .select_related("product", "line_of_business", "nomenclature_series")
         .order_by("product__product")
+    )
+    queryset = queryset.values_list("product", "product__product").annotate(
+        total_buh=Sum("buh"), total_skl=Sum("skl")
     )
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -327,6 +334,55 @@ class RemainsView(ListView):
             .order_by("line_of_business__line_of_business")
             .distinct()
         )
+        context["remains_without_series"] = (
+            context["filter"]
+            .qs.values_list("product__product", "product")
+            .annotate(
+                buh_sum=Sum("buh"),
+                skl_sum=Sum("skl"),
+            )
+            .order_by("product__product")
+        )
+        # context["sum_skl"] = Remains.objects.values("product__product").annotate(
+        #     skl_sum=Sum("skl")
+        # )
+        return context
+
+
+class RemainsDetailView(DetailView):
+    model = Remains
+    template_name = "EridonKh/remains_detail.html"
+
+    def get_object(self, queryset=None):
+        obj = (
+            Remains.objects.all()
+            .filter(
+                Q(product=self.kwargs["product"])
+                & Q(warehouse='Харківський підрозділ  ТОВ "Фірма Ерідон" с.Коротич')
+            )
+            .select_related("nomenclature_series")
+        )
+        return obj
+
+    # def get_queryset(self):
+    #     product = self.kwargs["product"]
+    #     return Remains.objects.all().filter(product=product)
+
+    # def get_object(self):
+    #     return Remains.objects.all().filter(
+    #         Q(product=self.kwargs["product"]),
+    #         Q(warehouse='Харківський підрозділ  ТОВ "Фірма Ерідон" с.Коротич'),
+    #     )
+    #
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["seeds"] = ["Власне виробництво насіння", "Насіння"]
+        context["lob"] = (
+            Remains.objects.values("line_of_business__line_of_business")
+            .filter(product=self.kwargs["product"])
+            .first()
+        )
+
         return context
 
 

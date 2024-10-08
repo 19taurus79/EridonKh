@@ -1,0 +1,76 @@
+{% extends 'EridonKh/index.html' %}
+
+{% block content %}
+    <br/>
+
+
+
+
+    <div class="container col-lg-10 col-md-4">
+    {#        <form action="{% url 'remains_page' %}" method="get" class="d-flex" role="search">#}
+    {#            <input name="product_search" class="form-control me-2" type="search" placeholder="Пошук"#}
+    {#                   aria-label="Search">#}
+    {#            <button class="btn btn-outline-success btn-light btn-outline-dark" type="submit">Пошук</button>#}
+    {#        </form>#}
+
+    <div class="container ">
+        <table class="table table-sm table-striped table-hover table-bordered table-fixed table-responsive">
+            {% if lob.line_of_business__line_of_business in seeds %}
+                <thead>
+                <tr>
+                    <th scope="col">Товар</th>
+                    <th scope="col">Партія</th>
+                    <th scope="col">МТН, г</th>
+                    <th scope="col">Країна походження</th>
+                    <th scope="col">Схожість, %</th>
+                    <th scope="col">Рік врожаю</th>
+                    <th scope="col">Бух облік</th>
+                    <th scope="col">Склад облік</th>
+                </tr>
+                </thead>
+                {% for val in object %}
+                <tbody id="myTable">
+                    <tr>
+                        <td>{{ val.product }}</td>
+                        <td>{{ val.nomenclature_series }}</td>
+                        <td>{{ val.nomenclature_series.mtn|default_if_none:"-" }}</td>
+                        <td>{{ val.nomenclature_series.origin_country|default_if_none:"-" }}</td>
+                        <td>{{ val.nomenclature_series.germination|default_if_none:"-" }}</td>
+                        <td>{{ val.nomenclature_series.crop_year|default_if_none:"-" }}</td>
+                        <td>{{ val.buh }}</td>
+                        <td>{{ val.skl }}</td>
+                    </tr>
+            {% endfor %}
+                {% else %}
+                <thead>
+                <tr>
+                    <th scope="col">Товар</th>
+                    <th scope="col">Партія</th>
+                    <th scope="col">Бух облік</th>
+                    <th scope="col">Склад облік</th>
+                </tr>
+                </thead>
+                {% for val in object %}
+                <tbody id="myTable">
+                    <tr>
+                        <td>{{ val.product }}</td>
+                        <td>{{ val.nomenclature_series }}</td>
+                        <td>{{ val.buh }}</td>
+                        <td>{{ val.skl }}</td>
+                    </tr>
+                {% endfor %}
+        {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+{% endblock %}
